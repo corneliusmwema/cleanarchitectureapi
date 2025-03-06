@@ -16,13 +16,9 @@ namespace Infrastructure
 {
     public static class DependencyInjection
     {
-        private static ILogger<VideoDBContext>? logger;
-
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Build service provider to get logger
-            var serviceProvider = services.BuildServiceProvider();
-            logger = serviceProvider.GetService<ILogger<VideoDBContext>>();
+            
 
             // Configure DbContext for MySQL
             var connectionString = configuration.GetConnectionString("DefaultConnection")
@@ -43,7 +39,6 @@ namespace Infrastructure
             var secretKey = jwtSettings["SecretKey"];
             if (string.IsNullOrEmpty(secretKey))
             {
-                logger.LogInformation("JWT SecretKey is not configured.");
                 throw new ArgumentNullException(nameof(secretKey), "JWT SecretKey is not configured.");
             }
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -80,6 +75,10 @@ namespace Infrastructure
             // Add health checks
             services.AddHealthChecks()
                 .AddDbContextCheck<VideoDBContext>();
+
+            // Build service provider to get logger
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<VideoDBContext>>();
 
             try
             {

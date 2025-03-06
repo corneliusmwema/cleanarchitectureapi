@@ -9,6 +9,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 //add logging
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
@@ -68,6 +70,8 @@ builder.Services.AddSwaggerGen(
 );
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 
 //use timezone here please,
