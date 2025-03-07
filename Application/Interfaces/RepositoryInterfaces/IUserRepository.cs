@@ -1,13 +1,10 @@
 using Domain.Entities;
 
-namespace Application.Interfaces.RepositoryInterfaces
+namespace Application.Interfaces.RepositoryInterfaces;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
+    Task<User?> GetUserByEmail(string email);
 
-        Task<User?> GetUserByEmail(string email);
-
-        Task<User> CreateUser(User user);
-
-    }
+    Task<User> CreateUser(User user);
 }

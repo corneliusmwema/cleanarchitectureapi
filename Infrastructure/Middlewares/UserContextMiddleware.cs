@@ -1,54 +1,43 @@
-
-
-
+using System.Security.Claims;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
-namespace Infrastructure.Middlewares
+namespace Infrastructure.Middlewares;
+
+public class UserContextMiddleware
 {
-    public class UserContextMiddleware
+    private readonly RequestDelegate _next;
+
+
+    public UserContextMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
 
-        public UserContextMiddleware(RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context)
+
+    {
+        if (context.User.Identity?.IsAuthenticated == true)
         {
-            _next = next;
-        }
+            var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var emailClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var nameClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
 
-        public async Task InvokeAsync(HttpContext context)
-
-        {
-            if (context.User.Identity?.IsAuthenticated == true)
-            {
-
-                var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var emailClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                var nameClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-
-                if (userIdClaim != null && emailClaim != null)
+            if (userIdClaim != null && emailClaim != null)
+                if (Guid.TryParse(userIdClaim, out var userId))
                 {
-
-                    if (Guid.TryParse(userIdClaim, out var userId))
+                    var user = new CurrentUser
                     {
-                        var user = new CurrentUser
-                        {
-                            UserId = userId,
-                            Email = emailClaim,
-                            UserName = nameClaim ?? string.Empty
-                        };
-                        context.Items["CurrentUser"] = user;
-                    }
-
+                        UserId = userId,
+                        Email = emailClaim,
+                        UserName = nameClaim ?? string.Empty
+                    };
+                    context.Items["CurrentUser"] = user;
                 }
-
-
-            }
-
-            await _next(context);
         }
+
+        await _next(context);
     }
 }

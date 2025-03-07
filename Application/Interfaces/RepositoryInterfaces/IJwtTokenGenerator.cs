@@ -1,11 +1,10 @@
 using Domain.Entities;
 
-namespace Application.Interfaces.RepositoryInterfaces
-{
-    public interface IJwtTokenGenerator
-    {
-        string GenerateToken(User user);
+namespace Application.Interfaces.RepositoryInterfaces;
 
-        string GenerateRefreshToken();
-    }
+public interface IJwtTokenGenerator
+{
+    string GenerateToken(User user);
+
+    string GenerateRefreshToken();
 }

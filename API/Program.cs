@@ -5,6 +5,7 @@ using HealthChecks.UI.Client;
 using Infrastructure;
 using Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,32 +41,31 @@ builder.Services.AddSwaggerGen(
     swagger =>
     {
         //this is to generate the default ui of swagger documentation
-        swagger.SwaggerDoc("v1", new() { Title = "TodoApp.API", Version = "v1" });
+        swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "TodoApp.API", Version = "v1" });
 
         //this is to add the jwt bearer authentication
-        swagger.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+        swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
-            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+            Type = SecuritySchemeType.ApiKey,
             Scheme = "Bearer",
             BearerFormat = "JWT",
-            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            In = ParameterLocation.Header
         });
-        swagger.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
             {
-                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                new OpenApiSecurityScheme
                 {
-                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    Reference = new OpenApiReference
                     {
-                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Type = ReferenceType.SecurityScheme,
                         Id = "Bearer"
                     }
                 },
-               Array.Empty<string>()
+                Array.Empty<string>()
             }
         });
-
     }
 );
 
@@ -79,18 +79,12 @@ app.MapDefaultEndpoints();
 // Configure middleware
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(c =>
- {
-     c.RouteTemplate = "api/swagger/{documentname}/swagger.json";
- });
+    app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentname}/swagger.json"; });
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "API V1");
         c.RoutePrefix = "api/swagger";
     });
-
-
-
 }
 
 app.MapHealthChecks("api/health", new HealthCheckOptions
@@ -102,7 +96,7 @@ app.MapHealthChecks("api/health", new HealthCheckOptions
 app.ApplyMigrations();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
-app.UseAuthentication();//add this line for using authentication
+app.UseAuthentication(); //add this line for using authentication
 app.UseMiddleware<UserContextMiddleware>();
 app.UseAuthorization();
 app.MapControllers();

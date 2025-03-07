@@ -1,20 +1,17 @@
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public abstract class BaseEntity
 {
-    public abstract class BaseEntity
+    public BaseEntity()
     {
-        public bool IsDeleted { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime UpdatedAt { get; set; }
-
-        public BaseEntity()
-        {
-            IsDeleted = false;
-            CreatedAt = DateTime.Now;
-            UpdatedAt = DateTime.Now;
-        }
-
-
+        IsDeleted = false;
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
     }
+
+    public bool IsDeleted { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

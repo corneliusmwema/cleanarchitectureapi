@@ -1,23 +1,20 @@
 using Domain.Entities;
 
-namespace Application.Interfaces.RepositoryInterfaces
+namespace Application.Interfaces.RepositoryInterfaces;
+
+public interface IVideoRepository
 {
-    public interface IVideoRepository
-    {
-        Task<Video?> GetVideoById(Guid id);
+    Task<Video?> GetVideoById(Guid id);
 
-        Task<IEnumerable<Video>> GetVideos();
+    Task<IEnumerable<Video>> GetVideos();
 
-        Task<IEnumerable<Video>> GetVideosByUserId(Guid userId);
+    Task<IEnumerable<Video>> GetVideosByUserId(Guid userId);
 
-        Task<Video> CreateVideo(Video video);
+    Task<Video> CreateVideo(Video video);
 
 
-        Task<Video> UpdateVideo(Video video);
+    Task<Video> UpdateVideo(Video video);
 
 
-        Task<bool> DeleteVideo(Guid id);
-
-
-    }
+    Task<bool> DeleteVideo(Guid id);
 }

@@ -4,48 +4,45 @@ using Application.Interfaces.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+[Route("api/v1/auth")]
+[ApiController]
+public class AuthController : BaseApiController
 {
-    [Route("api/v1/auth")]
-    [ApiController]
+    private readonly IAuthService _authService;
 
-    public class AuthController : BaseApiController
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(IAuthService authService, ILogger<AuthController> logger)
     {
-        private readonly IAuthService _authService;
+        _authService = authService;
+        _logger = logger;
+    }
 
-        private readonly ILogger<AuthController> _logger;
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterUserAsync(UserRegistrationDto registerUserDto)
+    {
+        var result = await _authService.RegisterUserAsync(registerUserDto);
 
-        public AuthController(IAuthService authService, ILogger<AuthController> logger)
-        {
-            _authService = authService;
-            _logger = logger;
-        }
+        return StatusCode(201, result);
+    }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUserAsync(UserRegistrationDto registerUserDto)
-        {
-            var result = await _authService.RegisterUserAsync(registerUserDto);
+    [HttpPost("login")]
+    public async Task<IActionResult> LoginUser(UserLoginDto loginUserDto)
+    {
+        var result = await _authService.LoginUser(loginUserDto);
 
-            return StatusCode(201, result);
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser(UserLoginDto loginUserDto)
-        {
-            var result = await _authService.LoginUser(loginUserDto);
-
-            return StatusCode(200, result);
-        }
+        return StatusCode(200, result);
+    }
 
 
-        [HttpGet("me")]
-        [Authorize]
+    [HttpGet("me")]
+    [Authorize]
+    public IActionResult IsUser()
+    {
+        var result = CurrentUser;
 
-        public IActionResult IsUser()
-        {
-            var result = CurrentUser;
-
-            return StatusCode(200, result);
-        }
+        return StatusCode(200, result);
     }
 }

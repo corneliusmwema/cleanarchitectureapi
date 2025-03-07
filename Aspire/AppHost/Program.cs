@@ -1,3 +1,4 @@
+using Projects;
 using Serilog;
 
 try
@@ -9,7 +10,7 @@ try
         .ReadFrom.Configuration(builder.Configuration)
         .CreateLogger());
 
-    builder.AddProject<Projects.API>("video-api");
+    builder.AddProject<API>("video-api");
 
     builder.Build().Run();
 }
