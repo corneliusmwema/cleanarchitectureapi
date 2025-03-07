@@ -68,6 +68,7 @@ builder.Services.AddSwaggerGen(
         });
     }
 );
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 

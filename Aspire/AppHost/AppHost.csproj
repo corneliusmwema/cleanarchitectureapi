@@ -9,6 +9,7 @@
         <Nullable>enable</Nullable>
         <IsAspireHost>true</IsAspireHost>
         <UserSecretsId>bdcff800-38bc-4c97-8552-4b46119d2c8c</UserSecretsId>
+        <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     </PropertyGroup>
 
     <ItemGroup>
